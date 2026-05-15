@@ -44,6 +44,12 @@
     function dibujarTodo() {
       limpiarCanvas();
       dibujarTablero2();
+      pintarParte(5,5);
+      pintarParte(10,2);
+      pintarParte(19,2);
+      pintarParte(19,19);
+      pintarParte(0,15);
+      pintarParte(2,19);
     }
 
     
@@ -67,8 +73,6 @@ async function dibujarTablero() {
     await new Promise(resolve => setTimeout(resolve, 500));
   }
 }
- 
-
 
 
 function moverDerecha(){
@@ -84,3 +88,13 @@ function moverDerecha(){
 
 }
 
+function pintarParte (lineaX, lineaY){
+  let valorX= lineaX*TAMANIO_CELDA;
+  let valorY= lineaY*TAMANIO_CELDA;
+
+  ctx.fillStyle ="red"; // para relleno a la celda
+  ctx.fillRect(valorX, valorY, TAMANIO_CELDA, TAMANIO_CELDA);
+  ctx.strokeStyle = "#9d1414";
+  ctx.strokeRect(valorX, valorY, TAMANIO_CELDA, TAMANIO_CELDA);
+ 
+}

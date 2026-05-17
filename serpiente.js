@@ -66,19 +66,6 @@ async function dibujarTablero() {
 }
 
 
-function moverDerecha(){
-  let cabezaActual = serpiente [0];
-  let nuevaCabeza = {
-    x: cabezaActual.x +1,
-    y: cabezaActual.y
-  };
-
-  serpiente.unshift(nuevaCabeza);
-  //Eliminamos la ultima parte
-  serpiente.pop();
-
-}
-
 function pintarParte (lineaX, lineaY, color){
   let valorX= lineaX*TAMANIO_CELDA;
   let valorY= lineaY*TAMANIO_CELDA;
@@ -91,10 +78,10 @@ function pintarParte (lineaX, lineaY, color){
 
 
 const serpiente= [
-  {x:0, y:3},
-  {x:0, y:4},
   {x:0, y:5},
-  {x:0, y:6}
+  {x:0, y:6},
+  {x:0, y:7},
+  {x:0, y:8}
 ];
 
 function pintarSerpiente(){
@@ -107,4 +94,66 @@ function pintarSerpiente(){
   }
 }
 
+function moverDerecha(){
+  let cabezaActual = serpiente [0];
+  let nuevaCabeza = {
+    x: cabezaActual.x +1,
+    y: cabezaActual.y
+  };
+
+  serpiente.unshift(nuevaCabeza); // Agregar una nueva cabeza al inicio
+  serpiente.pop(); //Eliminamos la cola
   dibujarTodo();
+}
+
+function moverIzquierda(){
+  let cabezaActual = serpiente [0];
+  let nuevaCabeza = {
+    x: cabezaActual.x -1,
+    y: cabezaActual.y
+  };
+
+  serpiente.unshift(nuevaCabeza); // Agregar una nueva cabeza al inicio
+  serpiente.pop(); //Eliminamos la cola
+  dibujarTodo();
+}
+
+function moverArriba(){
+  let cabezaActual = serpiente [0];
+  let nuevaCabeza = {
+    x: cabezaActual.x,
+    y: cabezaActual.y -1
+  };
+
+  serpiente.unshift(nuevaCabeza); // Agregar una nueva cabeza al inicio
+  serpiente.pop(); //Eliminamos la cola
+  dibujarTodo();
+}
+
+function moverAbajo(){
+  let cabezaActual = serpiente [0];
+  let nuevaCabeza = {
+    x: cabezaActual.x,
+    y: cabezaActual.y+1
+  };
+
+  serpiente.unshift(nuevaCabeza); // Agregar una nueva cabeza al inicio
+  serpiente.pop(); //Eliminamos la cola
+  dibujarTodo();
+}
+
+
+  dibujarTodo();
+  //setInterval(moverDerecha, 500);
+
+function cambiarDireccion(direccion){
+  if(direccion=="derecha"){
+    moverDerecha();
+  }else if (direccion=="izquierda"){
+    moverIzquierda();
+  } else if (direccion=="arriba"){
+    moverArriba();
+  } else if (direccion=="abajo"){
+    moverAbajo();
+  }
+}

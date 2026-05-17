@@ -3,6 +3,14 @@ let direccionActual= "derecha";
 let comidaX= 0;
 let comidaY=0;
 let puntaje= 0;
+let velocidad= 300;
+
+let musicaFondo= new Audio("fondo.mp3");
+let sonidoComida= new Audio("comida.mp3");
+let sonidoOver= new Audio("over.mp3");
+
+musicaFondo.loop= true;
+musicaFondo.volume= 0.4;
     
     
     // 1. Capturamos el canvas y su contexto de dibujo
@@ -94,9 +102,9 @@ const serpiente= [
 function pintarSerpiente(){
   for (let i=0 ; i<serpiente.length; i++){
     let parte = serpiente [i];
-    if (i==0){pintarParte(parte.x, parte.y, "yellow");
+    if (i==0){pintarParte(parte.x, parte.y, "#d7d766");
     }else{
-      pintarParte(parte.x, parte.y, "red");
+      pintarParte(parte.x, parte.y, "#189c9c");
     }
   }
 }
@@ -112,7 +120,7 @@ let maximoX = canvas.width / TAMANIO_CELDA;
 
 
 function pintarComida(){
-  pintarParte(comidaX, comidaY, "green");
+  pintarParte(comidaX, comidaY, "#39ff14");
 }
 
 function atrapaComida(){
@@ -205,8 +213,39 @@ function cambiarDireccion(direccion){
     //moverAbajo();
   //}
 
+  // Evitar reversa horizontal
+  if(direccionActual == "derecha" && direccion == "izquierda"){
+    return;
+  }
+
+  if(direccionActual == "izquierda" && direccion == "derecha"){
+    return;
+  }
+
+  // Evitar reversa vertical
+  if(direccionActual == "arriba" && direccion == "abajo"){
+    return;
+  }
+
+  if(direccionActual == "abajo" && direccion == "arriba"){
+    return;
+  }
+  
   direccionActual= direccion; //se mueve automaticamente
 }
+
+
+function ColisionCuerpo(){
+  let cabeza = serpiente[0];
+  for(let i = 1; i < serpiente.length; i++){
+    let parte = serpiente[i];
+    if(cabeza.x == parte.x && cabeza.y == parte.y){
+      return true;
+    }
+  }
+  return false;
+}
+
 
 
 
@@ -224,20 +263,108 @@ function moverSerpiente(){
   }
   if(atrapaComida()){puntaje++;document.getElementById("puntaje").textContent = puntaje;
     
+    sonidoComida.currentTime=0;
+    sonidoComida.play();
     generarComida();
     crecerSerpiente();
+    velocidad= velocidad -20; 
+    clearInterval(intervaloSerpiente);
+    intervaloSerpiente = setInterval(moverSerpiente, velocidad);
+
   }
+
+  if(Bordes()){
+  gameOver = true;
+  pausarJuego();
+  sonidoOver.play();
+  alert("GAME OVER");
+  
+  return;
+}
+  if(ColisionCuerpo()){
+  gameOver = true;
+  pausarJuego();
+  sonidoOver.play();
+  alert("GAME OVER");
+  
+  return;
+}
+
 
   dibujarTodo();
 }
 
 function iniciarJuego (){
   clearInterval(intervaloSerpiente);
-  intervaloSerpiente = setInterval(moverSerpiente, 500);
- 
+  intervaloSerpiente = setInterval(moverSerpiente, velocidad);
+  musicaFondo.play();
 }
 
 function pausarJuego (){
   clearInterval(intervaloSerpiente);
+  musicaFondo.pause();
 }
 
+let gameOver= false;
+
+
+function Bordes(){
+
+  let cabeza = serpiente[0];
+  let maximoX = canvas.width / TAMANIO_CELDA;
+  let maximoY = canvas.height / TAMANIO_CELDA;
+
+  // IZQUIERDA
+  if(cabeza.x < 0){
+    return true;
+  }
+
+  // DERECHA
+  if(cabeza.x >= maximoX){
+    return true;
+  }
+
+  // ARRIBA
+  if(cabeza.y < 0){
+    return true;
+  }
+
+  // ABAJO
+  if(cabeza.y >= maximoY){
+    return true;
+  }
+
+  return false;
+}
+
+function reiniciarJuego(){
+
+  pausarJuego();
+
+  // Reiniciar serpiente
+  serpiente.length = 0;
+
+  serpiente.push(
+    {x:4, y:5},
+    {x:4, y:6},
+    {x:4, y:7},
+    {x:4, y:8}
+  );
+
+  // Reiniciar dirección
+  direccionActual = "derecha";
+
+  // Reiniciar game over
+  gameOver = false;
+
+  // Reiniciar puntaje
+  puntaje = 0;
+
+  document.getElementById("puntaje").textContent = puntaje;
+
+  // Nueva comida
+  generarComida();
+
+  // Dibujar nuevamente
+  dibujarTodo();
+}

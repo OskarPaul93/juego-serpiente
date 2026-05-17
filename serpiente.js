@@ -29,11 +29,8 @@
         ctx.stroke();
       }
     }
-
-    // Primera pintura del juego al cargar la página
-    dibujarTodo();
-
-    // =========================
+    
+   
     // FUNCIONES DE DIBUJO
     // =========================
 
@@ -41,17 +38,11 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function dibujarTodo() {
+ function dibujarTodo() {
       limpiarCanvas();
       dibujarTablero2();
-      pintarParte(5,5);
-      pintarParte(10,2);
-      pintarParte(19,2);
-      pintarParte(19,19);
-      pintarParte(0,15);
-      pintarParte(2,19);
-    }
-
+      pintarSerpiente();
+    }   
     
 async function dibujarTablero() {
   ctx.strokeStyle = "#d84ff3";
@@ -76,7 +67,7 @@ async function dibujarTablero() {
 
 
 function moverDerecha(){
-  let cabezaActual = serpierte [0];
+  let cabezaActual = serpiente [0];
   let nuevaCabeza = {
     x: cabezaActual.x +1,
     y: cabezaActual.y
@@ -88,13 +79,32 @@ function moverDerecha(){
 
 }
 
-function pintarParte (lineaX, lineaY){
+function pintarParte (lineaX, lineaY, color){
   let valorX= lineaX*TAMANIO_CELDA;
   let valorY= lineaY*TAMANIO_CELDA;
 
-  ctx.fillStyle ="red"; // para relleno a la celda
-  ctx.fillRect(valorX, valorY, TAMANIO_CELDA, TAMANIO_CELDA);
-  ctx.strokeStyle = "#9d1414";
+  ctx.fillStyle =color; // para relleno a la celda
+  ctx.fillRect(valorX, valorY, TAMANIO_CELDA, TAMANIO_CELDA); //relleno
+  ctx.strokeStyle = "#9d1414"; //borde
   ctx.strokeRect(valorX, valorY, TAMANIO_CELDA, TAMANIO_CELDA);
- 
 }
+
+
+const serpiente= [
+  {x:0, y:3},
+  {x:0, y:4},
+  {x:0, y:5},
+  {x:0, y:6}
+];
+
+function pintarSerpiente(){
+  for (let i=0 ; i<serpiente.length; i++){
+    let parte = serpiente [i];
+    if (i==0){pintarParte(parte.x, parte.y, "yellow");
+    }else{
+      pintarParte(parte.x, parte.y, "red");
+    }
+  }
+}
+
+  dibujarTodo();
